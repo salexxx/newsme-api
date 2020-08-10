@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
@@ -16,6 +15,7 @@ const auth = require('./middlewares/auth');
 const NotFound = require('./errors/notfound');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { centralizedErr } = require('./errors/centralized');
+const limiter = require('./constants/limiter');
 
 mongoose.connect('mongodb://localhost:27017/newsme', {
   useNewUrlParser: true,
@@ -23,10 +23,6 @@ mongoose.connect('mongodb://localhost:27017/newsme', {
   useFindAndModify: false,
 });
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-});
 app.use(limiter);
 app.use(helmet());
 app.use(requestLogger);

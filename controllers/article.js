@@ -1,6 +1,7 @@
 const article = require('../models/article');
 const NotFound = require('../errors/notfound');
 const Forbidden = require('../errors/forbidden');
+const BadRequest = require('../errors/badrequest');
 
 module.exports.getArticles = (req, res, next) => {
   article
@@ -17,7 +18,7 @@ module.exports.createArticle = (req, res, next) => {
       keyword, title, text, date, source, link, image, owner: req.user._id,
     })
     .then((articles) => res.status(200).send({ data: articles }))
-    .catch(next);
+    .catch((err) => next(new BadRequest(err.message)));
 };
 module.exports.deleteArticle = (req, res, next) => {
   article

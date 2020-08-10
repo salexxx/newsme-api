@@ -1,5 +1,6 @@
 const article = require('../models/article');
 const NotFound = require('../errors/notfound');
+const Forbidden = require('../errors/forbidden');
 
 module.exports.getArticles = (req, res, next) => {
   article
@@ -20,8 +21,11 @@ module.exports.createArticle = (req, res, next) => {
 };
 module.exports.deleteArticle = (req, res, next) => {
   article
-    .findOne({ _id: req.params.articleId }).orFail(new NotFound('Нет такой новости'))
+    .findOne({ _id: req.params.articleId }).select('owner').orFail(new NotFound('Нет такой новости'))
     .then(async (artclobj) => {
+      if (artclobj.owner.toString() !== req.user._id) {
+        throw new Forbidden('Удалять не свои новости нельзя');
+      }
       await artclobj.remove();
       return res.status(200).send({ message: 'Новость удалена' });
     })

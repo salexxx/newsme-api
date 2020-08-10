@@ -10,8 +10,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const { errors } = require('celebrate');
-// const userRout = require('./routes/users');
-// const articleRout = require('./routes/articles');
 const router = require('./routes/index');
 const { login, createUser } = require('./controllers/user');
 const auth = require('./middlewares/auth');
@@ -19,7 +17,6 @@ const NotFound = require('./errors/notfound');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { centralizedErr } = require('./errors/centralized');
 
-// const { PORT = 3000 } = process.env;
 mongoose.connect('mongodb://localhost:27017/newsme', {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -57,8 +54,6 @@ app.post('/signup',
   }),
   createUser);
 app.use(auth);
-// app.use('/users', userRout);
-// app.use('/articles', articleRout);
 app.use(router);
 app.use('/*', (req, res, next) => {
   next(new NotFound('Запрашиваемый ресурс не найден'));

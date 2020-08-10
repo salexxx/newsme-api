@@ -10,8 +10,9 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const { errors } = require('celebrate');
-const userRout = require('./routes/users');
-const articleRout = require('./routes/articles');
+// const userRout = require('./routes/users');
+// const articleRout = require('./routes/articles');
+const router = require('./routes/index');
 const { login, createUser } = require('./controllers/user');
 const auth = require('./middlewares/auth');
 const NotFound = require('./errors/notfound');
@@ -56,9 +57,9 @@ app.post('/signup',
   }),
   createUser);
 app.use(auth);
-app.use('/users', userRout);
-app.use('/articles', articleRout);
-
+// app.use('/users', userRout);
+// app.use('/articles', articleRout);
+app.use(router);
 app.use('/*', (req, res, next) => {
   next(new NotFound('Запрашиваемый ресурс не найден'));
 });

@@ -6,11 +6,11 @@ const user = require('../models/user');
 const NotFound = require('../errors/notfound');
 const BadRequest = require('../errors/badrequest');
 
-module.exports.getUsers = (req, res, next) => {
+/* module.exports.getUsers = (req, res, next) => {
   user.find({})
     .then((users) => res.send({ data: users }))
     .catch(next);
-};
+}; */
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -43,7 +43,7 @@ module.exports.createUser = (req, res, next) => {
 
 module.exports.getUser = (req, res, next) => {
   user
-    .findById(req.params.id).orFail(new NotFound('Пользователь не найден'))
+    .findById(req.user._id).orFail(new NotFound('Пользователь не найден'))
     .then((someuser) => res.send({ data: someuser }))
     .catch(next);
 };

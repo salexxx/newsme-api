@@ -1,12 +1,8 @@
 const userRout = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
-const { getUsers, getUser } = require('../controllers/user');
+// const { celebrate, Joi } = require('celebrate');
+const { getUser } = require('../controllers/user');
 
-userRout.get('/', getUsers);
+// userRout.get('/', getUsers);
 
-userRout.get('/:id', celebrate({
-  params: Joi.object().keys({
-    id: Joi.string().length(24).hex(),
-  }),
-}), getUser);
+userRout.get('/me', getUser);
 module.exports = userRout;

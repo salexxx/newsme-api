@@ -11,15 +11,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const { errors } = require('celebrate');
 const userRout = require('./routes/users');
-const cardRout = require('./routes/cards');
+const articleRout = require('./routes/articles');
 const { login, createUser } = require('./controllers/user');
 const auth = require('./middlewares/auth');
 const NotFound = require('./errors/notfound');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const regexUrl = require('./regexUrl');
 
 const { PORT = 3000 } = process.env;
-mongoose.connect('mongodb://localhost:27017/mestodb', {
+mongoose.connect('mongodb://localhost:27017/newsme', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
@@ -51,15 +50,13 @@ app.post('/signup',
     body: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required().min(6),
-      name: Joi.string().required().min(2).max(30),
-      about: Joi.string().required().min(2).max(30),
-      avatar: Joi.string().pattern(regexUrl).required(),
+      name: Joi.string().required().min(2),
     }),
   }),
   createUser);
 app.use(auth);
 app.use('/users', userRout);
-app.use('/cards', cardRout);
+app.use('/articles', articleRout);
 
 app.use('/*', (req, res, next) => {
   next(new NotFound('Запрашиваемый ресурс не найден'));

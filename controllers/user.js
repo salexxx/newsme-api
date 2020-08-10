@@ -6,12 +6,6 @@ const user = require('../models/user');
 const NotFound = require('../errors/notfound');
 const BadRequest = require('../errors/badrequest');
 
-/* module.exports.getUsers = (req, res, next) => {
-  user.find({})
-    .then((users) => res.send({ data: users }))
-    .catch(next);
-}; */
-
 module.exports.createUser = (req, res, next) => {
   const {
     email, password, name, about, avatar,

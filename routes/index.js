@@ -6,6 +6,11 @@ const NotFound = require('../errors/notfound');
 const auth = require('../middlewares/auth');
 const { login, createUser } = require('../controllers/user');
 
+router.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 router.post('/signin',
   celebrate({
     body: Joi.object().keys({

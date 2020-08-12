@@ -1,7 +1,7 @@
 const articleRout = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+const { default: validator } = require('validator');
 const { getArticles, createArticle, deleteArticle } = require('../controllers/article');
-const regexUrl = require('../regexUrl');
 
 articleRout.get('/', getArticles);
 
@@ -12,8 +12,18 @@ articleRout.post('/', celebrate({
     text: Joi.string().required().min(2).max(30),
     date: Joi.string().required().min(2).max(30),
     source: Joi.string().required().min(2).max(30),
-    link: Joi.string().regex(regexUrl).required(),
-    image: Joi.string().regex(regexUrl).required(),
+    link: Joi.string().required().custom((value, helpers) => {
+      if (validator.isURL(value)) {
+        return value;
+      }
+      return helpers.message('Поле link заполненно некорректно');
+    }),
+    image: Joi.string().required().custom((value, helpers) => {
+      if (validator.isURL(value)) {
+        return value;
+      }
+      return helpers.message('Поле image заполненно некорректно');
+    }),
   }),
 }), createArticle);
 

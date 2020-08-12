@@ -6,7 +6,7 @@ const BadRequest = require('../errors/badrequest');
 module.exports.getArticles = (req, res, next) => {
   article
     .find({ owner: req.user._id })
-    .then((articles) => res.status(200).send({ data: articles }))
+    .then((articles) => res.send({ data: articles }))
     .catch(next);
 };
 module.exports.createArticle = (req, res, next) => {
@@ -17,7 +17,7 @@ module.exports.createArticle = (req, res, next) => {
     .create({
       keyword, title, text, date, source, link, image, owner: req.user._id,
     })
-    .then((articles) => res.status(200).send({ data: articles }))
+    .then((articles) => res.send({ data: articles }))
     .catch((err) => next(new BadRequest(err.message)));
 };
 module.exports.deleteArticle = (req, res, next) => {
@@ -28,7 +28,7 @@ module.exports.deleteArticle = (req, res, next) => {
         throw new Forbidden('Удалять не свои новости нельзя');
       }
       await artclobj.remove();
-      return res.status(200).send({ message: 'Новость удалена' });
+      return res.send({ message: 'Новость удалена' });
     })
     .catch(next);
 };

@@ -5,6 +5,8 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const user = require('../models/user');
 const NotFound = require('../errors/notfound');
 const BadRequest = require('../errors/badrequest');
+const Unauthorized = require('../errors/unauthorized');
+const Conflict = require('../errors/conflict');
 
 module.exports.createUser = (req, res, next) => {
   const {
@@ -22,14 +24,14 @@ module.exports.createUser = (req, res, next) => {
       about,
       avatar,
     }))
-    .then((users) => res.status(200).send({
+    .then((users) => res.send({
       data: {
         name: users.name, about: users.about, avatar: users.avatar, email: users.email,
       },
     }))
     .catch((err) => {
       if (err.code === 11000) {
-        throw new BadRequest('Пользователь с таким email уже зарегистрирован');
+        throw new Conflict('Пользователь с таким email уже зарегистрирован');
       }
     })
     .catch(next);
@@ -42,16 +44,12 @@ module.exports.getUser = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return user.findUserByCredentials(email, password)
     .then((usr) => {
       const token = jwt.sign({ _id: usr._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
       res.send({ token });
     })
-    .catch((err) => {
-      res
-        .status(401)
-        .send({ message: err.message });
-    });
+    .catch((err) => next(new Unauthorized(err.message)));
 };

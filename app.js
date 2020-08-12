@@ -17,7 +17,7 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { centralizedErr } = require('./errors/centralized');
 const limiter = require('./constants/limiter');
 
-mongoose.connect('mongodb://localhost:27017/newsme', {
+mongoose.connect(process.env.NODE_ENV === 'production' ? process.env.DB : 'mongodb://localhost:27017/newsme', {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,

@@ -10,10 +10,10 @@ const Conflict = require('../errors/conflict');
 
 module.exports.createUser = (req, res, next) => {
   const {
-    email, password, name, about, avatar,
+    email, password, name,
   } = req.body;
-
   if (!name || !password || password.length < 6 || name.match(/^[ ]+$/)) {
+    console.log(req.body.name);
     throw new BadRequest('Ведите имя и пароль не меньше 6 символов');
   }
   bcrypt.hash(password, 10)
@@ -21,8 +21,6 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
       name,
-      about,
-      avatar,
     }))
     .then((users) => res.send({
       data: {

@@ -32,6 +32,6 @@ router.use(auth);
 router.use('/users', userRout);
 router.use('/articles', articleRout);
 router.use('/*', (req, res, next) => {
-  next(new NotFound('Запрашиваемый ресурс не найден'));
+  next(new NotFound({ message: 'Запрашиваемый ресурс не найден' }));
 });
 module.exports = router;

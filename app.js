@@ -20,7 +20,7 @@ mongoose.connect(process.env.NODE_ENV === 'production' ? process.env.DB : 'mongo
   useFindAndModify: false,
 });
 
-const whitelist = ['http://localhost:8080'];
+const whitelist = ['http://localhost:8080', 'http://localhost:8081'];
 
 const corsOptions = {
   origin(origin, callback) {

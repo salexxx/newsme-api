@@ -22,10 +22,10 @@ module.exports.createArticle = (req, res, next) => {
 };
 module.exports.deleteArticle = (req, res, next) => {
   article
-    .findOne({ _id: req.params.articleId }).select('owner').orFail(new NotFound('Нет такой новости'))
+    .findOne({ _id: req.params.articleId }).select('owner').orFail(new NotFound({ message: 'Нет такой новости' }))
     .then(async (artclobj) => {
       if (artclobj.owner.toString() !== req.user._id) {
-        throw new Forbidden('Удалять не свои новости нельзя');
+        throw new Forbidden({ message: 'Удалять не свои новости нельзя' });
       }
       await artclobj.remove();
       return res.send({ message: 'Новость удалена' });

@@ -3,6 +3,7 @@ const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 app.use(bodyParser.json());
@@ -19,6 +20,20 @@ mongoose.connect(process.env.NODE_ENV === 'production' ? process.env.DB : 'mongo
   useFindAndModify: false,
 });
 
+const whitelist = ['http://localhost:8080', 'http://localhost:8081'];
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(limiter);
 app.use(helmet());
 app.use(requestLogger);

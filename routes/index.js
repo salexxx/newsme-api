@@ -6,11 +6,11 @@ const NotFound = require('../errors/notfound');
 const auth = require('../middlewares/auth');
 const { login, createUser } = require('../controllers/user');
 
-router.get('/crash-test', () => {
+/* router.get('/crash-test', () => {
   setTimeout(() => {
     throw new Error('Сервер сейчас упадёт');
   }, 0);
-});
+}); */
 router.post('/signin',
   celebrate({
     body: Joi.object().keys({
@@ -32,6 +32,6 @@ router.use(auth);
 router.use('/users', userRout);
 router.use('/articles', articleRout);
 router.use('/*', (req, res, next) => {
-  next(new NotFound('Запрашиваемый ресурс не найден'));
+  next(new NotFound({ message: 'Запрашиваемый ресурс не найден' }));
 });
 module.exports = router;

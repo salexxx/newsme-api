@@ -7,11 +7,11 @@ articleRout.get('/', getArticles);
 
 articleRout.post('/', celebrate({
   body: Joi.object().keys({
-    keyword: Joi.string().required().min(2).max(30),
-    title: Joi.string().required().min(2).max(30),
-    text: Joi.string().required().min(2).max(30),
-    date: Joi.string().required().min(2).max(30),
-    source: Joi.string().required().min(2).max(30),
+    keyword: Joi.string().required(),
+    title: Joi.string().required(),
+    text: Joi.string().required(),
+    date: Joi.string().required(),
+    source: Joi.string().required(),
     link: Joi.string().required().custom((value, helpers) => {
       if (validator.isURL(value)) {
         return value;
@@ -24,6 +24,7 @@ articleRout.post('/', celebrate({
       }
       return helpers.message('Поле image заполненно некорректно');
     }),
+    owner: Joi.string().required(),
   }),
 }), createArticle);
 

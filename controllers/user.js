@@ -13,7 +13,7 @@ module.exports.createUser = (req, res, next) => {
     email, password, name,
   } = req.body;
   if (!name || !password || password.length < 6 || name.match(/^[ ]+$/)) {
-    throw new BadRequest({ message: 'Ведите имя и пароль не меньше 6 символов' });
+    throw new BadRequest('Ведите имя и пароль не меньше 6 символов');
   }
   bcrypt.hash(password, 10)
     .then((hash) => user.create({
@@ -28,7 +28,7 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.code === 11000) {
-        throw new Conflict({ message: 'Пользователь с таким email уже зарегистрирован' });
+        throw new Conflict('Пользователь с таким email уже зарегистрирован');
       }
     })
     .catch(next);
@@ -46,7 +46,7 @@ module.exports.login = (req, res, next) => {
   return user.findUserByCredentials(email, password)
     .then((usr) => {
       const token = jwt.sign({ _id: usr._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
-      res.send({ token });
+      res.send({ token, name: usr.name, id: usr._id });
     })
-    .catch((err) => next(new Unauthorized(err.message)));
+    .catch((err) => next(new Unauthorized('Неправильные почта или пароль')));
 };
